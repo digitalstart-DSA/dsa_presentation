@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Start Academy — Forme-toi au marketing digital</title>
+<link rel="icon" href="LOGO_SRC">
+<meta name="description" content="Digital Start Academy forme les jeunes du monde entier à lancer leur business de produits digitaux, de zéro.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     GUIDE RAPIDE — les 3 seules choses à personnaliser
+     ============================================================
+     1) TON LIEN DE RÉSERVATION : tout en bas du fichier, dans la
+        balise <script>, remplace la valeur de BOOKING_URL par le
+        lien de ton Google Doc.
+     2) TA VIDÉO YOUTUBE : dans le même <script>, remplace
+        YOUTUBE_ID par l'identifiant de ta vidéo (la partie après
+        "watch?v=" dans l'URL YouTube). Mets la vidéo en "non
+        répertoriée" sur YouTube (pas "privée", sinon ça ne
+        s'affichera pas sur le site).
+     3) TES IMAGES DE TÉMOIGNAGES : dépose tes captures d'écran
+        dans le dossier /images/ en les nommant temoignage-1.jpg,
+        temoignage-2.jpg, etc. (jusqu'à temoignage-6.jpg). Pour en
+        ajouter/retirer, copie/colle ou supprime un bloc
+        <div class="proof-card">...</div>.
+     ============================================================ -->
+
+<style>
+  :root{
+    --bg:#05080f;
+    --panel:#0d1626;
+    --panel-soft:rgba(255,255,255,0.04);
+    --line:rgba(255,255,255,0.1);
+    --cyan:#4fd2f5;
+    --gold:#eeb15e;
+    --text:#eef2f8;
+    --dim:#95a2ba;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg); color:var(--text); font-family:'Manrope',sans-serif;
+    line-height:1.6; overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Sora',sans-serif; letter-spacing:-0.01em;}
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  #bg-field{position:fixed; inset:0; z-index:0; opacity:.5; pointer-events:none;}
+  .wrap{position:relative; z-index:1;}
+  .container{max-width:1120px; margin:0 auto; padding:0 24px;}
+
+  /* reveal on scroll */
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------------- HEADER ---------------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 28px;
+    backdrop-filter:blur(14px);
+    background:rgba(5,8,15,.55);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s ease, background .3s ease;
+  }
+  header.scrolled{border-color:var(--line); background:rgba(5,8,15,.85);}
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand img{width:38px; height:38px; border-radius:9px; box-shadow:0 0 20px rgba(79,210,245,.3);}
+  .brand span{font-weight:700; font-size:.95rem;}
+  .nav-cta{
+    font-size:.82rem; font-weight:700; padding:10px 20px; border-radius:999px;
+    background:linear-gradient(135deg,var(--cyan),var(--gold)); color:#06111f;
+    box-shadow:0 0 24px rgba(79,210,245,.35);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .nav-cta:hover{transform:translateY(-2px); box-shadow:0 4px 30px rgba(79,210,245,.5);}
+
+  /* ---------------- HERO ---------------- */
+  .hero{
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:140px 24px 80px; position:relative;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:11px; letter-spacing:2.5px; font-weight:700; color:var(--gold);
+    border:1px solid rgba(238,177,94,.35); padding:8px 16px; border-radius:999px;
+    background:rgba(238,177,94,.06); margin-bottom:28px;
+  }
+  .eyebrow .pulse{width:6px; height:6px; border-radius:50%; background:var(--gold); animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:.4; transform:scale(1.5);}}
+
+  .hero h1{
+    font-size:clamp(2.2rem, 5.5vw, 4.4rem); font-weight:800; line-height:1.08; max-width:920px;
+  }
+  .hero h1 .grad{
+    background:linear-gradient(100deg, var(--cyan) 10%, var(--gold) 60%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p.sub{
+    margin-top:24px; font-size:clamp(1rem,1.6vw,1.2rem); color:var(--dim); max-width:620px;
+  }
+  .hero-actions{display:flex; gap:16px; margin-top:42px; flex-wrap:wrap; justify-content:center;}
+
+  .btn{
+    font-family:'Sora',sans-serif; font-weight:700; font-size:.95rem;
+    padding:16px 32px; border-radius:14px; display:inline-flex; align-items:center; gap:10px;
+    transition:transform .25s ease, box-shadow .25s ease, filter .25s ease;
+    cursor:pointer; border:none;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--cyan),var(--gold)); color:#06111f;
+    box-shadow:0 0 0 rgba(79,210,245,.5);
+    animation:glow 2.6s ease-in-out infinite;
+  }
+  @keyframes glow{
+    0%,100%{box-shadow:0 0 20px rgba(79,210,245,.35), 0 0 0px rgba(238,177,94,0);}
+    50%{box-shadow:0 0 34px rgba(79,210,245,.55), 0 0 24px rgba(238,177,94,.35);}
+  }
+  .btn-primary:hover{transform:translateY(-3px) scale(1.02); filter:brightness(1.08);}
+  .btn-ghost{
+    background:rgba(255,255,255,.04); border:1px solid var(--line); color:var(--text);
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,.08); transform:translateY(-3px);}
+
+  .scroll-cue{
+    margin-top:70px; display:flex; flex-direction:column; align-items:center; gap:8px;
+    color:var(--dim); font-size:11px; letter-spacing:2px;
+  }
+  .scroll-cue .chevron{width:16px; height:16px; border-right:2px solid var(--dim); border-bottom:2px solid var(--dim); transform:rotate(45deg); animation:bounce 1.8s infinite;}
+  @keyframes bounce{0%,100%{transform:rotate(45deg) translate(0,0);} 50%{transform:rotate(45deg) translate(4px,4px);}}
+
+  /* ---------------- SECTION HEAD ---------------- */
+  .section{padding:110px 0;}
+  .section-head{text-align:center; max-width:640px; margin:0 auto 52px;}
+  .kicker{font-size:11px; letter-spacing:2.5px; font-weight:700; color:var(--cyan); margin-bottom:14px;}
+  .section-head h2{font-size:clamp(1.7rem,3.2vw,2.4rem); font-weight:800;}
+  .section-head p{margin-top:14px; color:var(--dim); font-size:1rem;}
+
+  /* ---------------- VIDEO ---------------- */
+  .video-frame{
+    max-width:900px; margin:0 auto; border-radius:20px; overflow:hidden;
+    border:1px solid var(--line); box-shadow:0 0 60px rgba(79,210,245,.18), 0 20px 60px rgba(0,0,0,.5);
+    position:relative;
+  }
+  .video-frame::before{
+    content:""; position:absolute; inset:-1px; border-radius:20px; padding:1px;
+    background:linear-gradient(135deg,var(--cyan),var(--gold)); opacity:.5;
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+  }
+  .video-ratio{position:relative; width:100%; padding-top:56.25%; background:#000;}
+  .video-ratio iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+
+  /* ---------------- STATS ---------------- */
+  .stats-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:20px; max-width:1000px; margin:0 auto;
+  }
+  .stat-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:16px;
+    padding:28px 18px; text-align:center;
+  }
+  .stat-card .num{
+    font-family:'Sora',sans-serif; font-weight:800; font-size:clamp(1.8rem,3vw,2.4rem);
+    background:linear-gradient(100deg,var(--cyan),var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .stat-card .label{margin-top:8px; font-size:.82rem; color:var(--dim);}
+
+  /* ---------------- PROOF / TESTIMONIALS ---------------- */
+  .proof-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:18px;
+  }
+  .proof-card{
+    border-radius:16px; overflow:hidden; border:1px solid var(--line);
+    cursor:pointer; position:relative; background:var(--panel);
+    transition:transform .3s ease, box-shadow .3s ease;
+  }
+  .proof-card:hover{transform:translateY(-6px); box-shadow:0 16px 40px rgba(79,210,245,.18);}
+  .proof-card img{width:100%; height:230px; object-fit:cover; display:block;}
+  .proof-card .zoom-hint{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(6,11,20,.0); color:#fff; font-size:.8rem; font-weight:700;
+    opacity:0; transition:opacity .25s ease, background .25s ease;
+  }
+  .proof-card:hover .zoom-hint{opacity:1; background:rgba(6,11,20,.35);}
+
+  /* lightbox */
+  .lightbox{
+    position:fixed; inset:0; background:rgba(3,5,10,.92); z-index:100;
+    display:none; align-items:center; justify-content:center; padding:30px;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{max-width:90vw; max-height:85vh; border-radius:12px; box-shadow:0 0 60px rgba(79,210,245,.3);}
+  .lightbox-close{
+    position:absolute; top:26px; right:32px; font-size:28px; color:#fff; cursor:pointer;
+    width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+    border-radius:50%; border:1px solid var(--line); background:rgba(255,255,255,.06);
+  }
+
+  /* ---------------- FINAL CTA ---------------- */
+  .final-cta{
+    text-align:center; padding:120px 24px;
+    background:radial-gradient(circle at 50% 30%, rgba(79,210,245,.1), transparent 60%);
+  }
+  .final-cta h2{font-size:clamp(1.8rem,3.6vw,3rem); font-weight:800; max-width:700px; margin:0 auto;}
+  .final-cta p{margin-top:18px; color:var(--dim); max-width:520px; margin-left:auto; margin-right:auto;}
+  .final-cta .btn{margin-top:38px; font-size:1.05rem; padding:20px 44px;}
+
+  footer{
+    border-top:1px solid var(--line); padding:36px 24px; text-align:center;
+    color:var(--dim); font-size:.8rem; display:flex; flex-direction:column; align-items:center; gap:10px;
+  }
+  footer img{width:34px; height:34px; border-radius:8px;}
+
+  @media (max-width:760px){
+    .stats-grid{grid-template-columns:repeat(2,1fr);}
+    .proof-grid{grid-template-columns:repeat(2,1fr);}
+    header{padding:14px 18px;}
+  }
+  @media (max-width:480px){
+    .proof-grid{grid-template-columns:1fr 1fr;}
+    .proof-card img{height:150px;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-field"></canvas>
+
+<div class="wrap">
+
+  <header id="site-header">
+    <div class="brand">
+      <img src="LOGO_SRC.jpeg" alt="DSA">
+      <span>Digital Start Academy</span>
+    </div>
+    <a class="nav-cta js-book-link" href="#" target="_blank" rel="noopener">Réserver un appel</a>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="eyebrow"><span class="pulse"></span> FORMATION MARKETING DIGITAL</div>
+    <h1>Ils ont commencé sans expérience.<br>Aujourd'hui, ils <span class="grad">vivent du digital.</span></h1>
+    <p class="sub">
+      Digital Start Academy forme les jeunes du monde entier à lancer leur business de produits digitaux —
+      de zéro, sans audience, sans expérience technique.
+    </p>
+    <div class="hero-actions">
+      <a href="#video" class="btn btn-primary">▶ Voir la présentation</a>
+      <a href="#" target="_blank" rel="noopener" class="btn btn-ghost js-book-link">Réserver un appel</a>
+    </div>
+    <div class="scroll-cue">DÉCOUVRIR<div class="chevron"></div></div>
+  </section>
+
+  <!-- ================= VIDEO ================= -->
+  <section class="section" id="video">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="kicker">EN 5 MINUTES</div>
+        <h2>Découvre Digital Start Academy</h2>
+        <p>Presley &amp; Steve t'expliquent, en direct, comment ça fonctionne — et si c'est fait pour toi.</p>
+      </div>
+      <div class="video-frame reveal">
+        <div class="video-ratio">
+          <iframe id="video-embed" src="" title="Présentation Digital Start Academy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STATS ================= -->
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card reveal">
+          <div class="num" data-count="500" data-suffix="+">0</div>
+          <div class="label">Étudiants formés</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="num" data-count="30" data-suffix="+">0</div>
+          <div class="label">Pays représentés</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="num" data-count="98" data-suffix="%">0</div>
+          <div class="label">Taux de satisfaction</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="num" data-count="2" data-suffix="">0</div>
+          <div class="label">Formateurs experts</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROOF / TÉMOIGNAGES ================= -->
+  <section class="section" id="resultats">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="kicker">ILS L'ONT FAIT</div>
+        <h2>Les résultats parlent</h2>
+        <p>Chiffres d'affaires et retours réels de quelques uns de nos étudiants</p>
+      </div>
+
+      <!-- Dépose tes captures d'écran dans /images/ nommées temoignage-1.jpg, temoignage-2.jpg, etc.
+           Pour ajouter/retirer une preuve, copie/colle ou supprime un bloc .proof-card. -->
+      <div class="proof-grid">
+        <div class="proof-card reveal"><img src="images/chariow 2.jpeg" alt="Résultat étudiant DSA" onclick="openLightbox(this.src)"><div class="zoom-hint">Agrandir</div></div>
+        <div class="proof-card reveal"><img src="images/temoignage-2.jpeg" alt="Résultat étudiant DSA" onclick="openLightbox(this.src)"><div class="zoom-hint">Agrandir</div></div>
+        <div class="proof-card reveal"><img src="images/temoignage-3.jpeg" alt="Résultat étudiant DSA" onclick="openLightbox(this.src)"><div class="zoom-hint">Agrandir</div></div>
+        <div class="proof-card reveal"><img src="images/temoignage-4.jpeg" alt="Résultat étudiant DSA" onclick="openLightbox(this.src)"><div class="zoom-hint">Agrandir</div></div>
+        <div class="proof-card reveal"><img src="images/temoignage-5.jpeg" alt="Résultat étudiant DSA" onclick="openLightbox(this.src)"><div class="zoom-hint">Agrandir</div></div>
+        <div class="proof-card reveal"><img src="images/temoignage-6.jpeg" alt="Résultat étudiant DSA" onclick="openLightbox(this.src)"><div class="zoom-hint">Agrandir</div></div>
+      </div>
+      <div class="proof-card reveal"><img src="images/temoignage-7.jpeg" alt="Résultat étudiant DSA" onclick="openLightbox(this.src)"><div class="zoom-hint">Agrandir</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CTA FINALE ================= -->
+  <section class="final-cta">
+    <h2 class="reveal">Prêt à passer à l'action ?</h2>
+    <p class="reveal">Réserve ton appel gratuit et découvre, en 20 minutes, si Digital Start Academy est fait pour toi.</p>
+    <a href="#" target="_blank" rel="noopener" class="btn btn-primary reveal js-book-link">Réserver mon appel maintenant</a>
+  </section>
+
+  <footer>
+    <img src="LOGO_SRC" alt="DSA">
+    <div>© Digital Start Academy — Tous droits réservés</div>
+  </footer>
+
+</div>
+
+<!-- Lightbox pour agrandir les images de témoignages -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close" onclick="closeLightbox()">✕</div>
+  <img id="lightbox-img" src="" alt="Agrandissement">
+</div>
+
+<script>
+  /* ============================================================
+     ⚙️ À PERSONNALISER — les 2 seules variables à remplir
+     ============================================================ */
+  const BOOKING_URL = "https://forms.gle/tK52gbawJpdhjpgZ7";
+  const YOUTUBE_ID  = "KboT_D9HPMw"; // ex: dQw4w9WgXcQ (partie après watch?v= dans l'URL)
+  /* ============================================================ */
+
+  document.querySelectorAll('.js-book-link').forEach(a => a.href = BOOKING_URL);
+  document.getElementById('video-embed').src = `https://www.youtube.com/embed/${YOUTUBE_ID}`;
+
+  // Header qui se fonce légèrement au scroll
+  const header = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 30);
+  });
+
+  // Reveal au scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Compteurs animés
+  document.querySelectorAll('.num').forEach(el => {
+    const target = parseInt(el.dataset.count, 10);
+    const suffix = el.dataset.suffix || '';
+    let done = false;
+    const counterIO = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !done) {
+          done = true;
+          let current = 0;
+          const step = Math.max(1, Math.round(target / 60));
+          const timer = setInterval(() => {
+            current += step;
+            if (current >= target) { current = target; clearInterval(timer); }
+            el.textContent = current + suffix;
+          }, 20);
+        }
+      });
+    }, { threshold: 0.4 });
+    counterIO.observe(el);
+  });
+
+  // Lightbox
+  function openLightbox(src){
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox(){
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target.id === 'lightbox') closeLightbox();
+  });
+
+  // Fond animé : réseau de nœuds
+  const canvas = document.getElementById('bg-field');
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let w, h, nodes;
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    const count = Math.min(70, Math.floor((w*h)/24000));
+    nodes = Array.from({length: count}, () => ({
+      x: Math.random()*w, y: Math.random()*h,
+      vx: (Math.random()-0.5)*0.18, vy: (Math.random()-0.5)*0.18
+    }));
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(let i=0;i<nodes.length;i++){
+      const n = nodes[i];
+      if(!reduceMotion){
+        n.x += n.vx; n.y += n.vy;
+        if(n.x<0||n.x>w) n.vx*=-1;
+        if(n.y<0||n.y>h) n.vy*=-1;
+      }
+      for(let j=i+1;j<nodes.length;j++){
+        const m = nodes[j];
+        const dx=n.x-m.x, dy=n.y-m.y, dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<150){
+          ctx.strokeStyle = `rgba(79,210,245,${0.14*(1-dist/150)})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(n.x,n.y); ctx.lineTo(m.x,m.y); ctx.stroke();
+        }
+      }
+    }
+    for(const n of nodes){
+      ctx.fillStyle = 'rgba(238,177,94,0.55)';
+      ctx.beginPath(); ctx.arc(n.x,n.y,1.7,0,Math.PI*2); ctx.fill();
+    }
+    if(!reduceMotion) requestAnimationFrame(draw);
+  }
+  draw();
+</script>
+
+</body>
+</html>
